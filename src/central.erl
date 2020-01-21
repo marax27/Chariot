@@ -3,7 +3,8 @@
 -export([start_link/1]).
 -export([init/1, handle_call/3, handle_cast/2,
          handle_info/2, terminate/2, code_change/3]).
--import(firetrucks, [make/1, as_map/1]).
+-export([dispatch_firefighting_action/3]).
+-import(firetrucks, [make/1, as_map/1, get_first_ready_id/1, update_vehicle_by_id/2]).
 
 -record(state, {vehicles, enqueued_incidents = []}).
 
@@ -22,7 +23,7 @@ init(Vehicles) ->
 % Call: a synchronous operation that returns a value.
 handle_call({get_vehicles}, _From, #state{vehicles = Vehicles} = State) ->
     Result = invoke_get_vehicles(Vehicles),
-    io:format("get_vehicles: ~p~n", [Result]),
+    io:format("get_vehicles: ~p~n", [State]),
     make_reply({ok, Result}, State);
 handle_call(Request, _From, State) ->
     error_logger:warning_msg("Bad call request: ~p~n", [Request]),
@@ -37,8 +38,12 @@ handle_cast(Message, State) ->
     error_logger:warning_msg("Bad cast request: ~p~n", [Message]),
     {noreply, State}.
 
+handle_info({report_enqueued}, #state{enqueued_incidents=[Incident | _]} = State) ->
+    io:format("Processing incident ~p...~n", [Incident]),
+    NewState = invoke_report_enqueued(State),
+    {noreply, NewState};
 handle_info(Info, State) ->
-    io:format("handle_info: ~p~n", [Info]),
+    error_logger:warning_msg("Bad info request: ~p~n", [Info]),
     {noreply, State}.
 
 terminate(_Reason, _State) ->
@@ -50,16 +55,36 @@ code_change(_OldVsn, State, _Extra) ->
     {ok, State}.
 
 
-%--- Invoke functions ----------------------------
+%--- Invoke functions ------------------
 
 invoke_get_vehicles(Vehicles) ->
     [as_map(V) || V <- Vehicles].
 
 
 invoke_report_incident(Report, #state{enqueued_incidents = Queue} = State) ->
+    self() ! {report_enqueued},
     State#state{enqueued_incidents = Queue ++ [Report]}.
 
-%--- Utilities ---------------------------
+invoke_report_enqueued(#state{vehicles=Vehicles, enqueued_incidents=[Incident | Tail]} = State) ->
+    case get_first_ready_id(Vehicles) of
+        nil ->
+            io:format("Cannot dispatch to incident ~p yet.~n", [Incident]),
+            State;
+        VehicleId ->
+            spawn(central, dispatch_firefighting_action, [VehicleId, self(), 5000]),
+            State#state{
+                vehicles = update_vehicle_by_id(VehicleId, Vehicles),
+                enqueued_incidents = Tail
+            }
+    end.
+
+%--- Action mocks ----------------------
+
+dispatch_firefighting_action(FireVehicleId, Pid, Duration) ->
+    timer:sleep(Duration),
+    Pid ! {action_finished, FireVehicleId}.
+
+%--- Utilities -------------------------
 
 make_reply(ReturnValue, State) ->
     {reply, ReturnValue, State}.
