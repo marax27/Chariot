@@ -3,9 +3,9 @@
 -export([start_link/1]).
 -export([init/1, handle_call/3, handle_cast/2,
          handle_info/2, terminate/2, code_change/3]).
--import(firetrucks, [make/1]).
+-import(firetrucks, [make/1, as_map/1]).
 
--record(state, {vehicles}).
+-record(state, {vehicles, enqueued_incidents = []}).
 
 start_link(FiretruckCount) ->
     Vehicles = [make(Id) || Id <- lists:seq(1, FiretruckCount)],
@@ -21,17 +21,18 @@ init(Vehicles) ->
 
 % Call: a synchronous operation that returns a value.
 handle_call({get_vehicles}, _From, #state{vehicles = Vehicles} = State) ->
-    io:format("Vehicles: ~p~n", [Vehicles]),
-    Reply = {ok, Vehicles},
-    make_reply(Reply, State);
+    Result = invoke_get_vehicles(Vehicles),
+    io:format("get_vehicles: ~p~n", [Result]),
+    make_reply({ok, Result}, State);
 handle_call(Request, _From, State) ->
     error_logger:warning_msg("Bad call request: ~p~n", [Request]),
     make_reply({error, bad_request}, State).
 
 % Cast: an asynchronous operation that does not return a value.
 handle_cast({report_incident, Details}, State) ->
-    io:format("Incident reported: ~p~n", [Details]),
-    {noreply, State};
+    NewState = invoke_report_incident(Details, State),
+    io:format("Incident ~p enqueued. State: ~p~n", [Details, NewState]),
+    {noreply, NewState};
 handle_cast(Message, State) ->
     error_logger:warning_msg("Bad cast request: ~p~n", [Message]),
     {noreply, State}.
@@ -48,6 +49,15 @@ code_change(_OldVsn, State, _Extra) ->
     io:format("code_change...~n"),
     {ok, State}.
 
+
+%--- Invoke functions ----------------------------
+
+invoke_get_vehicles(Vehicles) ->
+    [as_map(V) || V <- Vehicles].
+
+
+invoke_report_incident(Report, #state{enqueued_incidents = Queue} = State) ->
+    State#state{enqueued_incidents = Queue ++ [Report]}.
 
 %--- Utilities ---------------------------
 
