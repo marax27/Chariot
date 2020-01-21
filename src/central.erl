@@ -20,16 +20,22 @@ init(Vehicles) ->
     io:format("init: ~p~n", [State]),
     Return.
 
-handle_call(_Request, _From, State) ->
-    Reply = ok,
-    Return = {reply, Reply, State},
-    io:format("handle_call: ~p~n", [Return]),
-    Return.
+% Call: a synchronous operation that returns a value.
+handle_call({get_vehicles}, _From, #state{vehicles = Vehicles} = State) ->
+    io:format("Vehicles: ~p~n", [Vehicles]),
+    Reply = {ok, Vehicles},
+    make_reply(Reply, State);
+handle_call(Request, _From, State) ->
+    error_logger:warning_msg("Bad call request: ~p~n", [Request]),
+    make_reply({error, bad_request}, State).
 
-handle_cast(_Msg, State) ->
-    Return = {noreply, State},
-    io:format("handle_cast: ~p~n", [Return]),
-    Return.
+% Cast: an asynchronous operation that does not return a value.
+handle_cast({report_incident, Details}, State) ->
+    io:format("Incident reported: ~p~n", [Details]),
+    {noreply, State};
+handle_cast(Message, State) ->
+    error_logger:warning_msg("Bad cast request: ~p~n", [Message]),
+    {noreply, State}.
 
 handle_info(_Info, State) ->
     Return = {noreply, State},
@@ -44,3 +50,8 @@ code_change(_OldVsn, State, _Extra) ->
     Return = {ok, State},
     io:format("code_change: ~p~n", [Return]),
     Return.
+
+%--- Utilities ---------------------------
+
+make_reply(ReturnValue, State) ->
+    {reply, ReturnValue, State}.
