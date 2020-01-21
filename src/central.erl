@@ -3,7 +3,7 @@
 -export([start_link/1]).
 -export([init/1, handle_call/3, handle_cast/2,
          handle_info/2, terminate/2, code_change/3]).
--export([dispatch_firefighting_action/3]).
+-export([dispatch_firefighting_action/3, prepare_for_next_dispatch/3]).
 -import(firetrucks, [make/1, as_map/1, get_first_ready_id/1, update_vehicle_by_id/2]).
 
 -record(state, {vehicles, enqueued_incidents = []}).
@@ -46,6 +46,10 @@ handle_info({action_finished, VehicleId}, State) ->
     io:format("A vehicle ~p has returned from action.~n", [VehicleId]),
     NewState = invoke_action_finished(VehicleId, State),
     {noreply, NewState};
+handle_info({preparation_finished, VehicleId}, State) ->
+    io:format("A vehicle ~p is now ready for another dispatch.~n", [VehicleId]),
+    NewState = invoke_preparation_finished(VehicleId, State),
+    {noreply, NewState};
 handle_info(Info, State) ->
     error_logger:warning_msg("Bad info request: ~p~n", [Info]),
     {noreply, State}.
@@ -87,8 +91,12 @@ invoke_report_enqueued(#state{vehicles=Vehicles, enqueued_incidents=[Incident | 
     end.
 
 invoke_action_finished(VehicleId, #state{vehicles = Vehicles} = State) ->
-    % Skip notready.
-    UpdatedVehicles = update_vehicle_by_id(VehicleId, update_vehicle_by_id(VehicleId, Vehicles)),
+    UpdatedVehicles = update_vehicle_by_id(VehicleId, Vehicles),
+    spawn(?MODULE, prepare_for_next_dispatch, [VehicleId, self(), 5000]),
+    State#state{vehicles = UpdatedVehicles}.
+
+invoke_preparation_finished(VehicleId, #state{vehicles = Vehicles} = State) ->
+    UpdatedVehicles = update_vehicle_by_id(VehicleId, Vehicles),
     NewState = State#state{vehicles = UpdatedVehicles},
     invoke_report_enqueued(NewState).
 
@@ -97,6 +105,10 @@ invoke_action_finished(VehicleId, #state{vehicles = Vehicles} = State) ->
 dispatch_firefighting_action(VehicleId, Pid, Duration) ->
     timer:sleep(Duration),
     Pid ! {action_finished, VehicleId}.
+
+prepare_for_next_dispatch(VehicleId, Pid, Duration) ->
+    timer:sleep(Duration),
+    Pid ! {preparation_finished, VehicleId}.
 
 %--- Utilities -------------------------
 
