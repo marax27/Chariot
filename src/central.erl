@@ -42,6 +42,10 @@ handle_info({report_enqueued}, #state{enqueued_incidents=[Incident | _]} = State
     io:format("Processing incident ~p...~n", [Incident]),
     NewState = invoke_report_enqueued(State),
     {noreply, NewState};
+handle_info({action_finished, VehicleId}, State) ->
+    io:format("A vehicle ~p has returned from action.~n", [VehicleId]),
+    NewState = invoke_action_finished(VehicleId, State),
+    {noreply, NewState};
 handle_info(Info, State) ->
     error_logger:warning_msg("Bad info request: ~p~n", [Info]),
     {noreply, State}.
@@ -65,24 +69,34 @@ invoke_report_incident(Report, #state{enqueued_incidents = Queue} = State) ->
     self() ! {report_enqueued},
     State#state{enqueued_incidents = Queue ++ [Report]}.
 
+invoke_report_enqueued(#state{enqueued_incidents=[]} = State) ->
+    io:format("No incidents in queue.~n"),
+    State;
 invoke_report_enqueued(#state{vehicles=Vehicles, enqueued_incidents=[Incident | Tail]} = State) ->
     case get_first_ready_id(Vehicles) of
         nil ->
             io:format("Cannot dispatch to incident ~p yet.~n", [Incident]),
             State;
         VehicleId ->
-            spawn(central, dispatch_firefighting_action, [VehicleId, self(), 5000]),
+            io:format("Dispatching vehicle ~p to ~p~n", [VehicleId, Incident]),
+            spawn(?MODULE, dispatch_firefighting_action, [VehicleId, self(), 10000]),
             State#state{
                 vehicles = update_vehicle_by_id(VehicleId, Vehicles),
                 enqueued_incidents = Tail
             }
     end.
 
+invoke_action_finished(VehicleId, #state{vehicles = Vehicles} = State) ->
+    % Skip notready.
+    UpdatedVehicles = update_vehicle_by_id(VehicleId, update_vehicle_by_id(VehicleId, Vehicles)),
+    NewState = State#state{vehicles = UpdatedVehicles},
+    invoke_report_enqueued(NewState).
+
 %--- Action mocks ----------------------
 
-dispatch_firefighting_action(FireVehicleId, Pid, Duration) ->
+dispatch_firefighting_action(VehicleId, Pid, Duration) ->
     timer:sleep(Duration),
-    Pid ! {action_finished, FireVehicleId}.
+    Pid ! {action_finished, VehicleId}.
 
 %--- Utilities -------------------------
 
