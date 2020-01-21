@@ -16,9 +16,8 @@ start_link(FiretruckCount) ->
 
 init(Vehicles) ->
     State = #state{vehicles = Vehicles},
-    Return = {ok, State},
     io:format("init: ~p~n", [State]),
-    Return.
+    {ok, State}.
 
 % Call: a synchronous operation that returns a value.
 handle_call({get_vehicles}, _From, #state{vehicles = Vehicles} = State) ->
@@ -37,19 +36,18 @@ handle_cast(Message, State) ->
     error_logger:warning_msg("Bad cast request: ~p~n", [Message]),
     {noreply, State}.
 
-handle_info(_Info, State) ->
-    Return = {noreply, State},
-    io:format("handle_info: ~p~n", [Return]),
-    Return.
+handle_info(Info, State) ->
+    io:format("handle_info: ~p~n", [Info]),
+    {noreply, State}.
 
 terminate(_Reason, _State) ->
-    io:format("terminate~n"),
+    io:format("terminate...~n"),
     ok.
 
 code_change(_OldVsn, State, _Extra) ->
-    Return = {ok, State},
-    io:format("code_change: ~p~n", [Return]),
-    Return.
+    io:format("code_change...~n"),
+    {ok, State}.
+
 
 %--- Utilities ---------------------------
 
