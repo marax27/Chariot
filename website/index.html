@@ -5,18 +5,31 @@
   <meta charset="utf-8">
   <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 
+  <link href="https://fonts.googleapis.com/css?family=Lato&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="main.css">
+
   <title>Chariot</title>
 </head>
 
 <body>
-  <form id="reportIncident" method="POST">
-    <Legend>Report Incident</Legend>
-    <fieldset>
-      <input type="text" id="inputDistance" />
-      <input type="submit" value="Report incident" />
-    </fieldset>
-  </form>
-  <textarea id="actionLogs" readonly=true rows="30" cols="80"></textarea>
+  <div class="page">
+    <div class="page-section">
+      <form id="reportIncident" method="POST" class="report-form">
+        <fieldset>
+          <legend>Report Incident</legend>
+          <input type="text" id="inputDistance" class="col-75" />
+          <input type="submit" value="Report incident" class="col-25" />
+        </fieldset>
+      </form>
+    </div>
+    
+    <div class="page-section">
+      <fieldset>
+        <legend>Logs</legend>
+        <textarea id="actionLogs" readonly=true rows="30" class="log-window"></textarea>
+      </fieldset>
+    </div>
+  </div>
 
   <script src="scripts.js"></script>
 </body>
