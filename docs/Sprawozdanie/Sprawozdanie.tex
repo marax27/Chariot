@@ -12,9 +12,12 @@
 \usepackage{caption}
 \usepackage{subcaption}
 \usepackage{graphicx}
-
+\usepackage{tikz}
 \usepackage{listings}
 \usepackage{color}
+\usepackage{verbatim}
+
+\usetikzlibrary{shapes}
 
 \definecolor{mygreen}{rgb}{0,0.6,0}
 \definecolor{mygray}{rgb}{0.5,0.5,0.5}
@@ -41,16 +44,58 @@
 \maketitle
 
 \section{Cel programu}
-Celem programu Chariot jest prosta symulacja dystrybucji wozów strażackich do zgłaszanych pożarów. Przyjęliśmy, że dana jednostka może być w jednym z trzech stanów:
+Zadaniem programu jest rozsyłanie wozów strażackich do~incydentów zgłaszanych za~pośrednictwem strony internetowej. Pula wozów jest ograniczona, zaś same pojazdy po~powrocie z~akcji przez pewien czas pozostają niedostępne (czas na~uzupełnienie zapasów, naprawy itd.).
+\section{Moduły}
 \begin{itemize}
-	\item oczekiwanie - jest gotowy do wyjazdu z centrali
-	\item w akcji - jest niedostępny, wyjechał z centrali
-	\item odpoczynek - powrócił do centrali, musi uzupełnić ekwipunek, załoga musi odpocząć
+	\item \textbf{main} -- uruchamia serwer i pełni rolę klienta.
+	\item \textbf{central} -- reprezentuje centralę powiadamiania ratunkowego, której można zgłosić żądanie pomocy straży pożarnej. Moduł ten implementuje zachowanie \texttt{gen\_server}.
+	\item \textbf{domain} -- definuje rekord \texttt{state} używany przez serwer centrali, a~także tzw.~\emph{invoke functions} -- funkcje realizujące podstawową logikę aplikacji (zapisywanie zgłoszeń, wysyłanie wozów strażackich itd.).
+	\item \textbf{firetrucks} -- definiuje rekord \texttt{firetruck} reprezentujący wóz strażacki, a~także podstawowe operacje z~tym rekordem związane.
 \end{itemize}
 
-Zgłoszenia są przesyłane za pomocą formularza na stronie HTML.
+\subsection{Serwer centrali}
+Operacje realizowane przez serwer centrali możemy podzielić na~3~kategorie:
+\begin{itemize}
+	\item operacje opisane przez \texttt{handle\_call} są~synchroniczne, zwracają pewną wartość nie modyfikując stanu serwera.
+	\begin{itemize}
+		\item \texttt{get\_vehicles} pobiera aktualną listę pojazdów wraz z~ich stanem
+	\end{itemize}
 
-\section{Struktura programu}
+	\item operacje opisane przez \texttt{handle\_cast} są~asynchroniczne, nie blokują klienta. Nie zwracają istotnych wartości, ale mogą modyfikować stan serwera.
+	\begin{itemize}
+		\item \texttt{report\_incident} zgłasza incydent wymagający przyjazdu straży pożarnej
+	\end{itemize}
+
+	\item operacje opisane przez \texttt{handle\_info} sygnalizują serwerowi zajście jakiegoś zdarzenia. Nie powinny być wywoływane z~zewnątrz.
+	\begin{itemize}
+		\item \texttt{report\_enqueued} sygnalizuje, że~w~kolejce zgłoszeń znajdują się oczekujące zgłoszenia
+		\item \texttt{dispatch\_finished} sygnalizuje, że~pojazd wrócił z~akcji strażackiej
+		\item \texttt{preparation\_finished} sygnalizuje, że~pojazd jest gotowy do~następnej akcji strażackiej
+	\end{itemize}
+\end{itemize}
+
+\begin{tikzpicture}[state/.style={circle, draw, minimum size=2cm}]
+
+	\def \n {3}
+	\def \radius {2.5cm}
+	\def \margin {26} % margin in angles, depends on the radius
+	
+	\node[state] at (0:\radius) {\texttt{ready}};
+	  \draw[<-, >=latex] ({0+\margin}:\radius)
+		arc ({\margin}:{360/\n-\margin}:\radius);
+	\node at (60:\radius) [above right=0.05cm] {\texttt{preparation\_finished}};
+		
+	\node[state] at ({ -360/\n }:\radius) {\texttt{dispatched}};
+	  \draw[<-, >=latex] ({360/\n+\margin}:\radius)
+		arc ({360/\n+\margin}:{360/\n * 2-\margin}:\radius);
+	\node at (180:\radius) [left=0.1cm] {\texttt{dispatch\_finished}};
+	
+	\node[state] at ({ -360/\n * 2 }:\radius) {\texttt{notready}};
+	  \draw[<-, >=latex] ({360/\n * 2+\margin}:\radius) 
+		arc ({360/\n * 2+\margin}:{360/\n * 3-\margin}:\radius);
+	\node at (300:\radius) [right=0.1cm] {\texttt{report\_enqueued}};
+	
+\end{tikzpicture}
 
 \section{Pakiety zewnętrzne}
 
