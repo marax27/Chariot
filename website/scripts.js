@@ -17,9 +17,13 @@ function GetActionInfo() {
 
     $.get(Url, function(data, Status) {
         if(data) {
-            var previousText = document.getElementById("actionLogs").value;
-            const newLog = `${CurrentTime()}: ${data}`;
-            document.getElementById("actionLogs").value = `${newLog}\n${previousText}`;
+            const lines = JSON.parse(data);
+
+            lines.forEach(element => {
+                var previousText = document.getElementById("actionLogs").value;
+                const newLog = `${CurrentTime()}: ${element}`;
+                document.getElementById("actionLogs").value = `${newLog}\n${previousText}`;
+            });
         }
     });
 

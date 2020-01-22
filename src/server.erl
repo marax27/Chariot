@@ -42,4 +42,4 @@ getFireTrucks(SessionID, _Env, _Input) ->
     mod_esi:deliver(SessionID, ["Fire trucks to json"]).
 
 getActionInfo(SessionID, _Env, _Input) ->
-    mod_esi:deliver(SessionID, ["Get action info if any is queued"]).
+    mod_esi:deliver(SessionID, [jsone:encode([<<"First line">>, <<"Second line!">>])]).
