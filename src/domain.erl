@@ -4,7 +4,7 @@
 -export([invoke_get_vehicles/1, invoke_report_incident/2,
     invoke_report_enqueued/1, invoke_dispatch_finished/2,
     invoke_preparation_finished/2]).
--import(firetrucks, [make/1, as_map/1, get_first_ready_id/1, update_vehicle_by_id/2]).
+-import(firetrucks, [make/1, as_map/1, choose_ready_id/1, update_vehicle_by_id/2]).
 
 -record(state, {vehicles, enqueued_incidents = []}).
 
@@ -31,7 +31,7 @@ invoke_report_enqueued(#state{enqueued_incidents=[]} = State) ->
     io:format("No incidents in queue.~n"),
     State;
 invoke_report_enqueued(#state{vehicles=Vehicles, enqueued_incidents=[Incident | Tail]} = State) ->
-    case get_first_ready_id(Vehicles) of
+    case choose_ready_id(Vehicles) of
         nil ->
             io:format("Cannot dispatch to incident ~p yet.~n", [Incident]),
             State;
