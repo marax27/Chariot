@@ -7,8 +7,8 @@
     waiting_since = os:system_time()
 }).
 
-as_map(#firetruck{id=Id, status=Status}) ->
-    #{<<"id">>=>Id, <<"status">>=>Status}.
+as_map(#firetruck{id=Id, status=S, waiting_since=WS}) ->
+    #{<<"id">>=>Id, <<"status">>=>S, <<"waiting_since">>=>WS}.
 
 is_ready(#firetruck{status=Status}) ->
     Status == ready.

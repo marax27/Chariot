@@ -37,7 +37,8 @@ invoke_report_enqueued(#state{vehicles=Vehicles, enqueued_incidents=[Incident | 
             State;
         VehicleId ->
             io:format("Dispatching vehicle ~p to ~p~n", [VehicleId, Incident]),
-            spawn(?MODULE, dispatch_firefighting_action, [VehicleId, self(), 10000]),
+            Duration = 5000 + rand:uniform(10000),
+            spawn(?MODULE, dispatch_firefighting_action, [VehicleId, self(), Duration]),
             State#state{
                 vehicles = update_vehicle_by_id(VehicleId, Vehicles),
                 enqueued_incidents = Tail
@@ -47,7 +48,8 @@ invoke_report_enqueued(#state{vehicles=Vehicles, enqueued_incidents=[Incident | 
 
 invoke_dispatch_finished(VehicleId, #state{vehicles = Vehicles} = State) ->
     UpdatedVehicles = update_vehicle_by_id(VehicleId, Vehicles),
-    spawn(?MODULE, prepare_for_next_dispatch, [VehicleId, self(), 5000]),
+    Duration = 2000 + rand:uniform(10000),
+    spawn(?MODULE, prepare_for_next_dispatch, [VehicleId, self(), Duration]),
     State#state{vehicles = UpdatedVehicles}.
 
 
