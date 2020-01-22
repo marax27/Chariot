@@ -1,5 +1,5 @@
 -module(server).
--export([start_server/0, reportIncident/3, getFireTrucks/3, getActionInfo/3]). 
+-export([start_server/0, reportIncident/3, getFireTrucks/3]).
 
 start_server() ->
     inets:start(),
@@ -39,7 +39,6 @@ reportIncident(SessionID, _Env, _Input) ->
     mod_esi:deliver(SessionID, ["Report received\r\n"]).
 
 getFireTrucks(SessionID, _Env, _Input) ->
-    mod_esi:deliver(SessionID, ["Fire trucks to json"]).
-
-getActionInfo(SessionID, _Env, _Input) ->
-    mod_esi:deliver(SessionID, [jsone:encode([<<"First line">>, <<"Second line!">>])]).
+    {ok, Vehicles} = gen_server:call(central, {get_vehicles}),
+    Data = jsone:encode(Vehicles),
+    mod_esi:deliver(SessionID, [Data]).

@@ -12,22 +12,23 @@ $("#reportIncident").submit(function(event) {
     document.forms["reportIncident"].elements["inputDistance"].value = "";
 });
 
-function GetActionInfo() {
-    const Url = "http://localhost:8080/api/server:getActionInfo";
+function GetFireTrucks() {
+    const Url = "http://localhost:8080/api/server:getFireTrucks";
 
     $.get(Url, function(data, Status) {
         if(data) {
-            const lines = JSON.parse(data);
-
-            lines.forEach(element => {
-                var previousText = document.getElementById("actionLogs").value;
-                const newLog = `${CurrentTime()}: ${element}`;
-                document.getElementById("actionLogs").value = `${newLog}\n${previousText}`;
-            });
+            const firetrucks = JSON.parse(data);
+            LogMessage(firetrucks);
         }
     });
 
-    setTimeout(GetActionInfo, 1000);
+    setTimeout(GetFireTrucks, 1000);
+}
+
+function LogMessage(obj) {
+    const newLog = `${CurrentTime()}: ${JSON.stringify(obj)}`;
+    const previousText = document.getElementById("actionLogs").value;
+    document.getElementById("actionLogs").value = `${newLog}\n${previousText}`;
 }
 
 function CurrentTime() {
@@ -39,4 +40,4 @@ function CurrentTime() {
     return `${h}:${m}:${s}.${ms}`;
 }
 
-GetActionInfo();
+GetFireTrucks();
