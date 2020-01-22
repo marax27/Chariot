@@ -50,3 +50,30 @@ input[type=submit]:hover {
   width: 100%;
   resize: none;
 }
+
+.box {
+  display: inline-block;
+  width: 23%;
+  padding-bottom: 23%;
+  font-size: 50px;
+  text-align: center;
+  vertical-align: middle;
+  line-height: 80px;
+
+  position: relative;
+  height: 0;
+  margin: 1px;
+}
+
+.ready {
+  border: solid 2px navy;
+  background-color: lightskyblue;
+}
+.dispatched {
+  border: solid 2px firebrick;
+  background-color: orange;
+}
+.notready {
+  border: solid 2px orange;
+  background-color: yellow;
+}
