@@ -6,7 +6,7 @@
 -import(domain, [
     dispatch_firefighting_action/3, prepare_for_next_dispatch/3,
     invoke_get_vehicles/1, invoke_report_incident/2,
-    invoke_report_enqueued/1, invoke_action_finished/2,
+    invoke_report_enqueued/1, invoke_dispatch_finished/2,
     invoke_preparation_finished/2]).
 
 
@@ -41,9 +41,9 @@ handle_cast(Message, State) ->
 handle_info({report_enqueued}, State) ->
     NewState = invoke_report_enqueued(State),
     {noreply, NewState};
-handle_info({action_finished, VehicleId}, State) ->
+handle_info({dispatch_finished, VehicleId}, State) ->
     io:format("A vehicle ~p has returned from action.~n", [VehicleId]),
-    NewState = invoke_action_finished(VehicleId, State),
+    NewState = invoke_dispatch_finished(VehicleId, State),
     {noreply, NewState};
 handle_info({preparation_finished, VehicleId}, State) ->
     io:format("A vehicle ~p is now ready for another dispatch.~n", [VehicleId]),

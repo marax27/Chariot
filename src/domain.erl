@@ -2,7 +2,7 @@
 -export([create_state/1]).
 -export([dispatch_firefighting_action/3, prepare_for_next_dispatch/3]).
 -export([invoke_get_vehicles/1, invoke_report_incident/2,
-    invoke_report_enqueued/1, invoke_action_finished/2,
+    invoke_report_enqueued/1, invoke_dispatch_finished/2,
     invoke_preparation_finished/2]).
 -import(firetrucks, [make/1, as_map/1, get_first_ready_id/1, update_vehicle_by_id/2]).
 
@@ -45,7 +45,7 @@ invoke_report_enqueued(#state{vehicles=Vehicles, enqueued_incidents=[Incident | 
     end.
 
 
-invoke_action_finished(VehicleId, #state{vehicles = Vehicles} = State) ->
+invoke_dispatch_finished(VehicleId, #state{vehicles = Vehicles} = State) ->
     UpdatedVehicles = update_vehicle_by_id(VehicleId, Vehicles),
     spawn(?MODULE, prepare_for_next_dispatch, [VehicleId, self(), 5000]),
     State#state{vehicles = UpdatedVehicles}.
@@ -61,7 +61,7 @@ invoke_preparation_finished(VehicleId, #state{vehicles = Vehicles} = State) ->
 
 dispatch_firefighting_action(VehicleId, Pid, Duration) ->
     timer:sleep(Duration),
-    Pid ! {action_finished, VehicleId}.
+    Pid ! {dispatch_finished, VehicleId}.
 
 
 prepare_for_next_dispatch(VehicleId, Pid, Duration) ->
