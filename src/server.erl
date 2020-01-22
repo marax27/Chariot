@@ -35,7 +35,8 @@ start_server() ->
         _ -> init:stop()
     end.
 
-reportIncident(SessionID, _Env, _Input) ->
+reportIncident(SessionID, _Env, Input) ->
+    gen_server:cast(central, {report_incident, Input}),
     mod_esi:deliver(SessionID, ["Report received\r\n"]).
 
 getFireTrucks(SessionID, _Env, _Input) ->

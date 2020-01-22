@@ -8,7 +8,7 @@
 
 
 main(_Args) ->
-    InitialState = create_state(2),
+    InitialState = create_state(6),
     start_link(InitialState),
     start_server(),
     receive
