@@ -1,0 +1,64 @@
+\documentclass{article}
+\usepackage[a4paper]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage{polski}
+\usepackage{tabularx}
+\usepackage{indentfirst}
+\usepackage{multirow}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{anysize}
+\usepackage{tikz}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{graphicx}
+
+\usepackage{listings}
+\usepackage{color}
+\usetikzlibrary{shapes}
+
+\definecolor{mygreen}{rgb}{0,0.6,0}
+\definecolor{mygray}{rgb}{0.5,0.5,0.5}
+\definecolor{mymauve}{rgb}{0.58,0,0.82}
+
+\begin{document}
+%------------------------------------------------------------
+\section{Moduły}
+
+\begin{itemize}
+
+	\item \textbf{main} -- uruchamia serwer i pełni rolę klienta.
+
+	\item \textbf{central} -- reprezentuje centralę powiadamiania ratunkowego, której można zgłosić żądanie pomocy straży pożarnej. Moduł ten implementuje zachowanie \texttt{gen\_server}.
+
+	\item \textbf{domain} -- definuje rekord \texttt{state} używany przez serwer centrali, a~także tzw.~\emph{invoke functions} -- funkcje realizujące podstawową logikę aplikacji (zapisywanie zgłoszeń, wysyłanie wozów strażackich itd.).
+
+	\item \textbf{firetrucks} -- definiuje rekord \texttt{firetruck} reprezentujący wóz strażacki, a~także podstawowe operacje z~tym rekordem związane.
+\end{itemize}
+
+\section{Serwer centrali}
+Operacje realizowane przez serwer centrali możemy podzielić na~3~kategorie:
+\begin{itemize}
+	\item operacje opisane przez \texttt{handle\_call} są~synchroniczne, zwracają pewną wartość nie modyfikując stanu serwera.
+	\begin{itemize}
+		\item \texttt{get\_vehicles} pobiera aktualną listę pojazdów wraz z~ich stanem
+	\end{itemize}
+
+	\item operacje opisane przez \texttt{handle\_cast} są~asynchroniczne, nie blokują klienta. Nie zwracają istotnych wartości, ale mogą modyfikować stan serwera.
+	\begin{itemize}
+		\item \texttt{report\_incident} zgłasza incydent wymagający przyjazdu straży pożarnej
+	\end{itemize}
+
+	\item operacje opisane przez \texttt{handle\_info} sygnalizują serwerowi zajście jakiegoś zdarzenia. Nie powinny być wywoływane z~zewnątrz.
+	\begin{itemize}
+		\item \texttt{report\_enqueued} sygnalizuje, że~w~kolejce zgłoszeń znajdują się oczekujące zgłoszenia
+		\item \texttt{dispatch\_finished} sygnalizuje, że~pojazd wrócił z~akcji strażackiej
+		\item \texttt{preparation\_finished} sygnalizuje, że~pojazd jest gotowy do~następnej akcji strażackiej
+	\end{itemize}
+\end{itemize}
+
+\section{Projekt}
+Zadaniem programu jest rozsyłanie wozów strażackich do~incydentów zgłaszanych za~pośrednictwem strony internetowej. Pula wozów jest ograniczona, zaś same pojazdy po~powrocie z~akcji przez pewien czas pozostają niedostępne (czas na~uzupełnienie zapasów, naprawy itd.).
+
+\end{document}
