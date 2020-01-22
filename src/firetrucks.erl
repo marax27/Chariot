@@ -46,7 +46,7 @@ next_status(notready) -> ready.
 
 get_longest_waiting([X]) -> X;
 get_longest_waiting([#firetruck{waiting_since = T1} = F1, #firetruck{waiting_since = T2} = F2]) ->
-    if T1 < T2 -> F1;
+    if T1 =< T2 -> F1;
        true -> F2
     end;
 get_longest_waiting([F1, F2 | Tail]) ->
