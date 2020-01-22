@@ -6,8 +6,23 @@ $("#reportIncident").submit(function(event) {
     var distance = document.forms["reportIncident"].elements["inputDistance"].value;
     
     $.post(Url, distance, function(data, status) {
-        alert(distance + "\n" + data);
-    })
+        
+    });
     
     document.forms["reportIncident"].elements["inputDistance"].value = "";
 });
+
+function GetActionInfo() {
+    const Url = "http://localhost:8080/api/server:getActionInfo";
+
+    $.get(Url, function(data, Status) {
+        if(data) {
+            var previousText = document.getElementById("actionLogs").value;
+            document.getElementById("actionLogs").value = data + "\r\n" + previousText;
+        }
+    });
+
+    setTimeout(GetActionInfo, 1000);
+}
+
+GetActionInfo();
