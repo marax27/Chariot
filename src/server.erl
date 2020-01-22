@@ -19,6 +19,7 @@ start_server() ->
         {server_name, "Chariot"}, 
         {server_root, "./"}, 
         {document_root, "../website"},
+        {directory_index, ["index.html"]},
         {error_log, "../logs/error.log"},
         {security_log, "../logs/security.log"},
         {transfer_log, "../logs/transfer.log"},

@@ -10,7 +10,7 @@
 main(_Args) ->
     InitialState = create_state(2),
     start_link(InitialState),
-    spawn(server, start_server, []),
+    start_server(),
     receive
         _ -> init:stop()
     end.
