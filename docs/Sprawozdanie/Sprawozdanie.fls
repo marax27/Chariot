@@ -270,6 +270,12 @@ INPUT c:/texlive/2019/texmf-dist/fonts/tfm/public/pl/plti10.tfm
 INPUT c:/texlive/2019/texmf-dist/fonts/tfm/public/pl/plbx12.tfm
 OUTPUT c:\Programming\Repositories\Chariot\docs\Sprawozdanie/Sprawozdanie.pdf
 INPUT c:/texlive/2019/texmf-var/fonts/map/pdftex/updmap/pdftex.map
+INPUT c:\Programming\Repositories\Chariot\docs\Sprawozdanie/ChariotBase.png
+INPUT c:/Programming/Repositories/Chariot/docs/Sprawozdanie/ChariotBase.png
+INPUT c:/Programming/Repositories/Chariot/docs/Sprawozdanie/ChariotBase.png
+INPUT c:\Programming\Repositories\Chariot\docs\Sprawozdanie/ChariotCentral.png
+INPUT c:/Programming/Repositories/Chariot/docs/Sprawozdanie/ChariotCentral.png
+INPUT c:/Programming/Repositories/Chariot/docs/Sprawozdanie/ChariotCentral.png
 INPUT c:\Programming\Repositories\Chariot\docs\Sprawozdanie/Sprawozdanie.aux
 INPUT c:/texlive/2019/texmf-dist/fonts/enc/dvips/pl/plit.enc
 INPUT c:/texlive/2019/texmf-dist/fonts/enc/dvips/pl/pltt.enc

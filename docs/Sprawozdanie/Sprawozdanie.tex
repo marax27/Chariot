@@ -52,7 +52,7 @@ Zadaniem programu jest rozsyłanie wozów strażackich do~incydentów zgłaszany
 	\item \textbf{central} -- reprezentuje centralę powiadamiania ratunkowego, której można zgłosić żądanie pomocy straży pożarnej. Moduł ten implementuje zachowanie \texttt{gen\_server}.
 	\item \textbf{domain} -- definiuje rekord \texttt{state} używany przez serwer centrali, a~także tzw.~\emph{invoke functions} -- funkcje realizujące podstawową logikę aplikacji (zapisywanie zgłoszeń, wysyłanie wozów strażackich itd.).
 	\item \textbf{firetrucks} -- definiuje rekord \texttt{firetruck} reprezentujący wóz strażacki, a~także podstawowe operacje z~tym rekordem związane.
-	\item \textbf{server} -- serwer HTTP zaimplementowany za pomocą \texttt{httpd}; są~w~nim~definiowane funkcje odpowiadające na~zapytania GET/POST
+	\item \textbf{server} -- serwer HTTP zaimplementowany za pomocą \texttt{httpd} zawierającego się w pakiecie \texttt{inets}; są~w~nim~definiowane funkcje odpowiadające na~zapytania GET/POST
 \end{itemize}
 
 \subsection{Serwer centrali}
@@ -76,6 +76,7 @@ Operacje realizowane przez serwer centrali możemy podzielić na~3~kategorie:
 	\end{itemize}
 \end{itemize}
 
+\begin{figure}[H]
 \begin{tikzpicture}[state/.style={circle, draw, minimum size=2cm}]
 
 	\def \n {3}
@@ -98,13 +99,15 @@ Operacje realizowane przez serwer centrali możemy podzielić na~3~kategorie:
 	\node at (300:\radius) [right=0.1cm] {\texttt{report\_enqueued}};
 	
 \end{tikzpicture}
+\caption{Cykl pracy wozu strażackiego}
+\end{figure}
 
-\section{Główne komponenty programu}
+\section{Główne komponenty programu i ich zadania}
 \textbf{Main:}
 \begin{enumerate}
-	\item Utworzenie puli pojazdów
-	\item Uruchomienie serwera centrali
-	\item Uruchomienie serwera HTTP
+	\item Tworzy pulę pojazdów
+	\item Uruchamia serwer centrali
+	\item Uruchomia serwer HTTP
 \end{enumerate}
 
 \textbf{Serwer centrali:}
@@ -125,13 +128,25 @@ Operacje realizowane przez serwer centrali możemy podzielić na~3~kategorie:
 	\item Udostępnia pole tekstowe wraz z przyciskiem "Report incident", który po naciśnięciu wykonuje zapytanie POST
 	\item Pokazuje obecne stany pojazdów w puli:
 		\begin{itemize}
-			\item \texttt{ready} - barwa niebieska
-			\item \texttt{dispatched} - barwa pomarańczowa
-			\item \texttt{notready} - barwa żółta
+			\item \texttt{ready} -- barwa niebieska
+			\item \texttt{dispatched} -- barwa pomarańczowa
+			\item \texttt{notready} -- barwa żółta
 		\end{itemize}
 	\item Wyświetla logi - zserializowane rekordy pojazdów składające się z pól \texttt{id} oraz \texttt{status}
 	\item Co dany okres czasu (domyślnie 1s) odpytuje serwer o aktualny stan pojazdów
 \end{enumerate}
+
+\section{Diagramy sekwencji}
+\begin{figure}[H]
+	\includegraphics[width=.9\linewidth]{ChariotBase.png}
+	\caption{Przebieg zapytania o stan pojazdów}
+\end{figure}
+
+\begin{figure}[H]
+	\includegraphics[width=.9\linewidth]{ChariotCentral.png}
+	\caption{Przebieg zgłaszania wypadku}
+	
+\end{figure}
 
 \section{Pakiety zewnętrzne}
 \begin{itemize}
@@ -162,6 +177,7 @@ Problem został rozwiązany poprzez dodanie do rekordu pojazdu parametru \texttt
 \begin{itemize}
 	\item Liczba wozów strażackich jest określona przy starcie programu, nie można jej zmienić po starcie programu
 	\item Pojazdy straży nie są w jakikolwiek sposób rozróżnialne od siebie
+	\item Akcje, na które wysyłane są wozy strażackie są imitowane funkcją \texttt{timer:sleep()}. W stanie \texttt{dispatched} pojazd przebywa od 5 do 15 sekund, a w stanie \texttt{notready} od 2 do 12 sekund
 \end{itemize}
 
 \section{Możliwe rozszerzenia programu}

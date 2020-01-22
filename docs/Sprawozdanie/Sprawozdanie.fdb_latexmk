@@ -1,8 +1,10 @@
 # Fdb version 3
-["pdflatex"] 1579693704 "c:/Programming/Repositories/Chariot/docs/Sprawozdanie/Sprawozdanie.tex" "c:\Programming\Repositories\Chariot\docs\Sprawozdanie/Sprawozdanie.pdf" "Sprawozdanie" 1579693707
-  "Sprawozdanie.aux" 1579693707 1083 3d87be8abb06eff39dc3b5a32091c606 "pdflatex"
-  "Sprawozdanie.tex" 1579693702 7960 5a30aab051c9e59295358cabdf7a685d ""
-  "c:/Programming/Repositories/Chariot/docs/Sprawozdanie/Sprawozdanie.tex" 1579693702 7960 5a30aab051c9e59295358cabdf7a685d ""
+["pdflatex"] 1579696266 "c:/Programming/Repositories/Chariot/docs/Sprawozdanie/Sprawozdanie.tex" "c:\Programming\Repositories\Chariot\docs\Sprawozdanie/Sprawozdanie.pdf" "Sprawozdanie" 1579696269
+  "ChariotBase.png" 1579696061 12156 dbe13762363f7d49a80bb4d70a501132 ""
+  "ChariotCentral.png" 1579695958 13807 dd33d42b4e87124984d30b0c55d9d443 ""
+  "Sprawozdanie.aux" 1579696269 1617 117118c1d349bf2980835a827610c5fa "pdflatex"
+  "Sprawozdanie.tex" 1579696262 8607 adf4421b21f8f18416524467df61c5da ""
+  "c:/Programming/Repositories/Chariot/docs/Sprawozdanie/Sprawozdanie.tex" 1579696262 8607 adf4421b21f8f18416524467df61c5da ""
   "c:/texlive/2019/texmf-dist/fonts/enc/dvips/pl/plit.enc" 1575045183 1946 62ba825cda1ff16dbaa60d53ac60525a ""
   "c:/texlive/2019/texmf-dist/fonts/enc/dvips/pl/plrm.enc" 1575045183 1944 1845592c00bbe510359fd6887a83ff72 ""
   "c:/texlive/2019/texmf-dist/fonts/enc/dvips/pl/pltt.enc" 1575045183 1971 0a4e750f2a9cb8345529a19560d48a96 ""
@@ -177,10 +179,10 @@
   "c:/texlive/2019/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1575048212 4741432 ede32d05196f69f144ce6ba0b4ddc628 ""
   "c:/texlive/2019/texmf-var/web2c/pdftex/pdflatex.fmt" 1575048351 4290334 62758050883063df57b96c6af56a7afb ""
   "c:/texlive/2019/texmf.cnf" 1575048176 673 4ae7b2f49cee444c5343a45b5d0f169c ""
-  "c:\Programming\Repositories\Chariot\docs\Sprawozdanie/Sprawozdanie.aux" 1579693707 1083 3d87be8abb06eff39dc3b5a32091c606 ""
+  "c:\Programming\Repositories\Chariot\docs\Sprawozdanie/Sprawozdanie.aux" 1579696269 1617 117118c1d349bf2980835a827610c5fa ""
   (generated)
+  "c:\Programming\Repositories\Chariot\docs\Sprawozdanie/Sprawozdanie.log"
+  "c:\Programming\Repositories\Chariot\docs\Sprawozdanie/Sprawozdanie.pdf"
   "Sprawozdanie.pdf"
   "Sprawozdanie.aux"
-  "c:\Programming\Repositories\Chariot\docs\Sprawozdanie/Sprawozdanie.log"
   "Sprawozdanie.log"
-  "c:\Programming\Repositories\Chariot\docs\Sprawozdanie/Sprawozdanie.pdf"
