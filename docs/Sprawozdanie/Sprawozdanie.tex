@@ -34,7 +34,7 @@
 \title{Chariot}
 \subtitle{Akademia Górniczo-Hutnicza im. Stanisława Staszica w Krakowie\\
 	Wydział Elektrotechniki, Automatyki,\\
-	Informatyki i Inżynierii Biomedycznej\\
+	Informatyki i~Inżynierii Biomedycznej\\
 	Informatyka, 3. rok, PWiR grupa 5a}
 \author{Kacper Tonia\and
 		Sławomir Kalandyk}
@@ -48,7 +48,7 @@
 Zadaniem programu jest rozsyłanie wozów strażackich do~incydentów zgłaszanych za~pośrednictwem strony internetowej. Pula wozów jest ograniczona, zaś same pojazdy po~powrocie z~akcji przez pewien czas pozostają niedostępne (czas na~uzupełnienie zapasów, naprawy itd.).
 \section{Moduły}
 \begin{itemize}
-	\item \textbf{main} -- uruchamia serwer i pełni rolę klienta.
+	\item \textbf{main} -- uruchamia serwer i~pełni rolę klienta.
 	\item \textbf{central} -- reprezentuje centralę powiadamiania ratunkowego, której można zgłosić żądanie pomocy straży pożarnej. Moduł ten implementuje zachowanie \texttt{gen\_server}.
 	\item \textbf{domain} -- definiuje rekord \texttt{state} używany przez serwer centrali, a~także tzw.~\emph{invoke functions} -- funkcje realizujące podstawową logikę aplikacji (zapisywanie zgłoszeń, wysyłanie wozów strażackich itd.).
 	\item \textbf{firetrucks} -- definiuje rekord \texttt{firetruck} reprezentujący wóz strażacki, a~także podstawowe operacje z~tym rekordem związane.
@@ -102,7 +102,7 @@ Operacje realizowane przez serwer centrali możemy podzielić na~3~kategorie:
 \caption{Cykl pracy wozu strażackiego}
 \end{figure}
 
-\section{Główne komponenty programu i ich zadania}
+\section{Główne komponenty programu i~ich zadania}
 \textbf{Main:}
 \begin{enumerate}
 	\item Tworzy pulę pojazdów
@@ -119,8 +119,8 @@ Operacje realizowane przez serwer centrali możemy podzielić na~3~kategorie:
 \textbf{Serwer HTTP:}
 \begin{enumerate}
 	\item Po uruchomieniu, oczekuje na~zapytania GET/POST
-	\item Przy zapytaniu GET: zwraca zserializowane pojazdy wraz z~ich obecnym stanem
-	\item Przy zapytaniu POST: zleca zmianę stanu jednego z pojazdów na \texttt{dispatched}
+	\item Przy zapytaniu \emph{GET /api/server:getFireTrucks} zwraca zserializowane pojazdy wraz z~ich obecnym stanem
+	\item Przy zapytaniu \emph{POST /api/server:reportIncident} przekazuje szczegóły incydentu (dane wpisane przez użytkownika w~formularzu) centrali
 \end{enumerate}
 
 \textbf{Strona WWW:}
@@ -132,7 +132,7 @@ Operacje realizowane przez serwer centrali możemy podzielić na~3~kategorie:
 			\item \texttt{dispatched} -- barwa pomarańczowa
 			\item \texttt{notready} -- barwa żółta
 		\end{itemize}
-	\item Wyświetla logi - zserializowane rekordy pojazdów składające się z pól \texttt{id}, \texttt{status} oraz \texttt{waiting\_since}
+	\item Wyświetla logi -- zserializowane rekordy pojazdów zawierające pola \texttt{id}, \texttt{status} oraz \texttt{waiting\_since}
 	\item Co dany okres czasu (domyślnie 1s) odpytuje serwer o aktualny stan pojazdów
 \end{enumerate}
 
@@ -150,36 +150,36 @@ Operacje realizowane przez serwer centrali możemy podzielić na~3~kategorie:
 
 \section{Pakiety zewnętrzne}
 \begin{itemize}
-	\item Jsone - pakiet służący nam do serializowania rekordów do formatu JSON, posiada licencję MIT
+	\item jsone -- pakiet służący nam do~serializowania rekordów do~formatu JSON, na~licencji MIT
 \end{itemize}
 
 \section{Specyficzne rozwiązania}
 \subsection{Problem "głodzenia" pojazdów}
-Domyślnie pojazdem wysyłanym do wypadku byłby pojazd w stanie \texttt{ready} o najmniejszym identyfikatorze spośród takich pojazdów. Potencjalnie mogło to doprowadzić do sytuacji, gdy część pojazdów nigdy nie zostałaby wykorzystana. Przykładowo:
+Domyślnie pojazdem wysyłanym do~wypadku byłby pojazd w~stanie \texttt{ready} o~najmniejszym identyfikatorze spośród takich pojazdów. Potencjalnie mogło to~doprowadzić do~sytuacji, gdy część pojazdów nigdy nie zostałaby wykorzystana. Przykładowo:
 \begin{itemize}
 	\item Posiadamy 6 pojazdów
-	\item Pojazd 1 zmienia stan na \texttt{dispatched}, zaraz po nim przychodzi kolejna informacja o wypadku i pojazd 2 zmienia stan na \texttt{dispatched}
-	\item Pojazd 1 wraca, zmienia stan na \texttt{notready} i zaraz później na \texttt{ready}
-	\item Przychodzi informacja o wypadku: pojazd 1 zmienia stan na \texttt{dispatched}
+	\item Pojazd~1 zmienia stan na~\texttt{dispatched}, zaraz po~nim przychodzi kolejna informacja o~wypadku i~pojazd~2 zmienia stan na~\texttt{dispatched}
+	\item Pojazd~1 wraca, zmienia stan na~\texttt{notready} i~zaraz później na~\texttt{ready}
+	\item Przychodzi informacja o~wypadku: pojazd~1 zmienia stan na~\texttt{dispatched}
 \end{itemize}
-Ostatecznie, gdyby taka sytuacja powtarzała się cały czas, pojazdy o ID 3, 4, 5, 6 potencjalnie mogłyby nie być w ogóle wykorzystywane.
+Ostatecznie, gdyby taka sytuacja powtarzała się cały czas, pojazdy o~ID 3, 4, 5, 6 potencjalnie mogłyby nie być w ogóle wykorzystywane.
 
-Problem został rozwiązany poprzez dodanie do rekordu pojazdu parametru \texttt{waiting\_since}, który zapisuje czas, w którym pojazd ostatni raz zmienił stan na \texttt{ready}. Do wypadku wysyłany jest pojazd, który najdłużej nie był wykorzystywany - różnica pomiędzy czasem obecnym, a zapisanym jest największa spośród pojazdów.
+Problem został rozwiązany poprzez dodanie do~rekordu pojazdu parametru \texttt{waiting\_since} przechowującego czas, w~którym pojazd ostatni raz zmienił stan na~\texttt{ready}. Do~wypadku wysyłany jest pojazd, który najdłużej nie był wykorzystywany (różnica pomiędzy czasem obecnym, a~zapisanym jest największa spośród pojazdów).
 
 \section{Instrukcja obsługi}
 \begin{enumerate}
 	\item W katalogu projektu wywołaj "make compile"
-	\item Wykonaj "cd beam", a potem "escript main.beam" (przejście do katalogu beam i uruchomienie programu)
-	\item Wejdź w przeglądarce internetowej na adres localhost:8080
+	\item Wykonaj "cd beam", a potem "escript main.beam" (przejście do~katalogu beam i~uruchomienie programu)
+	\item Przejdź na~adres \mbox{http://localhost:8080}
 \end{enumerate}
 
 \section{Ograniczenia programu}
 \begin{itemize}
 	\item Liczba wozów strażackich jest określona przy starcie programu, nie można jej zmienić po starcie programu
-	\item Pojazdy straży nie są w jakikolwiek sposób rozróżnialne od siebie
-	\item Akcje, na które wysyłane są wozy strażackie są imitowane funkcją \texttt{timer:sleep()}. W stanie \texttt{dispatched} pojazd przebywa od 5 do 15 sekund, a w stanie \texttt{notready} od 2 do 12 sekund
+	\item Pojazdy straży są~jednakowe
+	\item Akcje, na które wysyłane są wozy strażackie są imitowane funkcją \texttt{timer:sleep()}. W stanie \texttt{dispatched} pojazd przebywa od 5 do~15 sekund, a w stanie \texttt{notready} od 2 do~12 sekund
 \end{itemize}
 
 \section{Możliwe rozszerzenia programu}
-Jednym z możliwych rozszerzeń jest dodanie różnych typów wypadków i możliwość wyboru wypadku. Nadałoby to sens rozróżnieniu pojazdów ze względu na wyposażenie - to, czy pojazd mógłby wyruszyć do akcji zależałoby od tego, czy jest odpowiednio wyposażony, aby móc efektywnie nieść pomoc na miejscu zdarzenia.
+Jednym z możliwych rozszerzeń jest dodanie różnych typów wypadków i~możliwość wyboru wypadku. Nadałoby to sens rozróżnieniu pojazdów ze względu na wyposażenie -- to, czy pojazd mógłby wyruszyć do~akcji zależałoby od tego, czy jest odpowiednio wyposażony, aby móc efektywnie nieść pomoc na miejscu zdarzenia.
 \end{document}
