@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/W32TeX) (preloaded format=pdflatex 2019.11.29)  22 JAN 2020 13:31
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/W32TeX) (preloaded format=pdflatex 2019.11.29)  23 JAN 2020 13:49
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -647,12 +647,16 @@ File: ot4cmtt.fd 2008/02/24 v1.2.1 Font defs for fonts PL (MW)
 ) [1
 
 {c:/texlive/2019/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
+Overfull \hbox (3.61877pt too wide) in paragraph at lines 135--136
+[]\OT4/cmr/m/n/10 Wy±wietla lo-gi - zse-ria-li-zo-wa-ne re-kor-dy po-jaz-dów skªa-da-j¡-ce si¦ z pól \OT4/cmtt/m/n/10 id\OT4/cmr/m/n/10 , \OT4/cmtt/m/n/10 status \OT4/cmr/m/n/10 oraz \OT4/cmtt/m/n/10 waiting[]since 
+ []
+
 <ChariotBase.png, id=18, 507.8975pt x 302.12875pt>
 File: ChariotBase.png Graphic file (type png)
 <use ChariotBase.png>
 Package pdftex.def Info: ChariotBase.png  used on input line 141.
 (pdftex.def)             Requested size: 409.71692pt x 243.73177pt.
- [2]
+[2]
 <ChariotCentral.png, id=23, 583.17876pt x 302.12875pt>
 File: ChariotCentral.png Graphic file (type png)
 <use ChariotCentral.png>
@@ -668,7 +672,7 @@ Here is how much of TeX's memory you used:
  1141 hyphenation exceptions out of 8191
  60i,8n,67p,468b,733s stack positions out of 5000i,500n,10000p,200000b,80000s
 {c:/texlive/2019/texmf-dist/fonts/enc/dvips/pl/plit.enc}{c:/texlive/2019/texmf-dist/fonts/enc/dvips/pl/pltt.enc}{c:/texlive/2019/texmf-dist/fonts/enc/dvips/pl/plrm.enc}<c:/texlive/2019/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb><c:/texlive/2019/texmf-dist/fonts/type1/public/pl/plbx10.pfb><c:/texlive/2019/texmf-dist/fonts/type1/public/pl/plbx12.pfb><c:/texlive/2019/texmf-dist/fonts/type1/public/pl/plr10.pfb><c:/texlive/2019/texmf-dist/fonts/type1/public/pl/plr12.pfb><c:/texlive/2019/texmf-dist/fonts/type1/public/pl/plr17.pfb><c:/texlive/2019/texmf-dist/fonts/type1/public/pl/plr9.pfb><c:/texlive/2019/texmf-dist/fonts/type1/public/pl/plti10.pfb><c:/texlive/2019/texmf-dist/fonts/type1/public/pl/pltt10.pfb>
-Output written on c:\Programming\Repositories\Chariot\docs\Sprawozdanie/Sprawozdanie.pdf (4 pages, 95172 bytes).
+Output written on c:\Programming\Repositories\Chariot\docs\Sprawozdanie/Sprawozdanie.pdf (4 pages, 96023 bytes).
 PDF statistics:
  64 PDF objects out of 1000 (max. 8388607)
  44 compressed objects within 1 object stream
